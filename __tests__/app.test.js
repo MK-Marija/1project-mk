@@ -4,6 +4,8 @@ const app = require(`${__dirname}/../api/app`)
 const db = require(`${__dirname}/../db/connection`)
 const seed = require(`${__dirname}/../db/seeds/seed`)
 const testData = require(`${__dirname}/../db/data/test-data`)
+const data = require(`${__dirname}/../endpoints.json`)
+
 
 beforeEach(() => {
    return seed(testData)
@@ -44,4 +46,15 @@ describe("GET/ api/topics", () => {
  })
 
 })
-    
+
+describe("GET/ api/ ", () => {
+    test("200: returns an object describing all the available endpoints ", () => {
+        return request(app)
+        .get("/api")
+        .expect(200)
+        .then(({body}) => {
+             expect(body).toEqual(data);
+        })
+    })
+
+})
