@@ -21,8 +21,7 @@ describe("GET/ api/topics", () => {
         .get("/api/topics")
         .expect(200)
         .then(({body}) => {
-            console.log(body, "<<<<<")
-          expect(body.hasOwnProperty("topics")).toBe(true);
+            expect(body.hasOwnProperty("topics")).toBe(true);
         })
     })
 
@@ -31,6 +30,8 @@ describe("GET/ api/topics", () => {
         .get("/api/topics")
         .expect(200)
         .then(({body}) => {
+            expect(body.topics.length).toBeGreaterThan(1)
+            expect(Array.isArray(body.topics)).toBe(true)
             body.topics.forEach(topic => {
                 expect(topic).toEqual(expect.objectContaining({
                   slug: expect.any(String),
