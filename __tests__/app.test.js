@@ -58,3 +58,42 @@ describe("GET/ api/ ", () => {
     })
 
 })
+
+describe("GET/ api/articles/:article_id", () => {
+    test.only("200: returns an articles object with relevant properties ", () => {
+        return request(app)
+        .get("/api/articles/1")
+        .expect(200)
+        .then(({body}) => {
+             expect(body.articles).toMatchObject({
+                article_id: 1,
+                title: 'Living in the shadow of a great man',
+                topic: 'mitch',
+                author: 'butter_bridge',
+                body: 'I find this existence challenging',
+                created_at: '2020-07-09T20:11:00.000Z',
+                votes: 100,
+                article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700'
+             });
+        })
+    })
+
+    test("400: Returns error msg 'Bad request' when bad request is made example NaN", () => {
+        return request(app)
+        .get("/api/articles/bad")
+        .expect(400)
+        .then(({body}) => {
+          expect(body.msg).toBe("Bad request");
+        })
+    })
+
+test("404: Returns 'Not found' when article_id is valid(as data type) but does not exist", () => {
+    return request(app)
+    .get("/api/articles/88")
+    .expect(404)
+    .then(({body}) => {
+      expect(body.msg).toBe("Not found");
+    })
+})
+
+})
