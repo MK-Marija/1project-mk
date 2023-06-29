@@ -97,3 +97,56 @@ test("404: Returns 'Not found' when article_id is valid(as data type) but does n
 })
 
 })
+
+describe("GET/ api/articles", () => {
+    test("200: makes sure the array is not empty and returns the articles sorted by desc date", () => {
+        return request(app)
+        .get("/api/articles/")
+        .expect(200)
+        .then(({body}) => {
+            const {articles} = body
+          
+            expect(articles.length).toBeGreaterThan(0)
+            expect(Array.isArray(articles)).toBe(true)
+            expect(articles).toBeSortedBy(Number("created_at"));
+            expect(articles).toBeSortedBy("created_at", {descending: true})
+            articles.forEach((article) => {
+                expect(article).toHaveProperty("article_id", expect.any(Number));
+                expect(article).toHaveProperty("author", expect.any(String));
+                expect(article).toHaveProperty("title", expect.any(String));
+                expect(article).toHaveProperty("topic", expect.any(String));
+                expect(article).toHaveProperty("created_at", expect.any(String));
+                expect(article).toHaveProperty("votes", expect.any(Number));
+                expect(article).toHaveProperty("votes", expect.any(Number));
+                expect(article).toHaveProperty("article_img_url", expect.any(String));
+                expect(article).toHaveProperty("comment_count", expect.any(String));
+                })
+            })
+        })
+     })
+    
+
+     test("400: Responds'Bad request'for an invalid sort_by", () => {
+        return request(app)
+        .get("/api/articles/?sort_by=creed_at")
+        .expect(400)
+        .then(({body}) => {
+          expect(body.msg).toBe("Bad request");
+        })
+    })
+
+test("404: Returns custom error message ", () => {
+    return request(app)
+    .get("/api/notapath")
+    .expect(404)
+    .then(({body}) => {
+      expect(body.msg).toBe("Not found");
+    })
+})
+
+
+               
+                
+            
+     
+
