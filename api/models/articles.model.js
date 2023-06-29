@@ -35,4 +35,8 @@ exports.selectAllArticles = (sort_by="created_at", order = "DESC") => {
                             GROUP BY articles.article_id
                             ORDER BY articles.${sort_by} ${order}`)
 
+                            .then(({rows}) => {
+                                return rows;
+                            })
+
 }

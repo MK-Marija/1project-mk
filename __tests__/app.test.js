@@ -104,17 +104,27 @@ describe("GET/ api/articles", () => {
         .get("/api/articles/")
         .expect(200)
         .then(({body}) => {
+            const {articles} = body
           
-            expect(body.articles.rows.length).toBeGreaterThan(0)
-            expect(Array.isArray(body.articles.rows)).toBe(true)
-            expect(body.articles.rows).toBeSortedBy(Number("created_at"));
-            expect(body.articles.rows).toBeSortedBy("created_at", {descending: true})
-            body.articles.rows.forEach((article) => {
-                 expect(article).toHaveProperty("author", expect.any(String)) })
-
+            expect(articles.length).toBeGreaterThan(0)
+            expect(Array.isArray(articles)).toBe(true)
+            expect(articles).toBeSortedBy(Number("created_at"));
+            expect(articles).toBeSortedBy("created_at", {descending: true})
+            articles.forEach((article) => {
+                expect(article).toHaveProperty("article_id", expect.any(Number));
+                expect(article).toHaveProperty("author", expect.any(String));
+                expect(article).toHaveProperty("title", expect.any(String));
+                expect(article).toHaveProperty("topic", expect.any(String));
+                expect(article).toHaveProperty("created_at", expect.any(String));
+                expect(article).toHaveProperty("votes", expect.any(Number));
+                expect(article).toHaveProperty("votes", expect.any(Number));
+                expect(article).toHaveProperty("article_img_url", expect.any(String));
+                expect(article).toHaveProperty("comment_count", expect.any(String));
                 })
+            })
         })
      })
+    
 
      test("400: Responds'Bad request'for an invalid sort_by", () => {
         return request(app)
@@ -135,18 +145,7 @@ test("404: Returns custom error message ", () => {
 })
 
 
-                    // body.articles.rows.forEach((article) => {
-                    // expect(article).toEqual(expect.objectContaining({
-                    // article_id: expect.any(Number),
-                    // author: expect.any(String),
-                    // title: expect.any(String),
-                    // topic: expect.any(String),
-                    // created_at:expect.any(String),
-                    // votes:expect.any(Number),
-                    // article_img_url: expect.any(String),
-                    // comment_count: expect.any(Number),
-
-                // }))
+               
                 
             
      
