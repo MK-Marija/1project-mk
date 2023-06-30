@@ -16,9 +16,6 @@ exports.selectAllComments = (article_id,sort_by="created_at", order = "DESC") =>
     const ordered = ["ASC", "DESC"]
     order = order.toUpperCase()
 
-  
-
-
     if(!sorted.includes(sort_by) || !ordered.includes(order)) {  
         return Promise.reject({status:400, msg: "Bad request"})
 
@@ -39,8 +36,5 @@ exports.selectAllComments = (article_id,sort_by="created_at", order = "DESC") =>
                             .then(({rows}) => {
                                 return rows;
                             })
-    })
-
-                           
-
+    })                       
 }
