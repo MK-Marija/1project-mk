@@ -4,6 +4,7 @@ const {handlePsqlErrors, handleCustomErrors, handleServerErrors} = require(`${__
 const express = require("express");
 const data = require(`${__dirname}/../endpoints.json`)
 
+
 const app = express();
 app.use(express.json());
 
