@@ -123,7 +123,7 @@ describe("GET/ api/articles", () => {
                 })
             })
         })
-     })
+     
     
 
      test("400: Responds'Bad request'for an invalid sort_by", () => {
@@ -143,9 +143,53 @@ test("404: Returns custom error message ", () => {
       expect(body.msg).toBe("Not found");
     })
 })
+})
+
+describe("GET/ a/api/articles/:article_id/comments", () => {
+    test("200: makes sure it responds with an array of objects ", () => {
+        return request(app)
+        .get("/api/articles/1/comments")
+        .expect(200)
+        .then(({body}) => {
+            const {comments} = body
+            expect(comments.length).toBe(11)
+            expect(Array.isArray(comments)).toBe(true)
+            comments.forEach((comment) => {
+                expect(comment).toBeObject();
+            })
+          })
+        })
+    
+
+        test("200: makes sure it responds with the correct properties with the most recent comments first", () => {
+            return request(app)
+            .get("/api/articles/1/comments")
+            .expect(200)
+            .then(({body}) => {
+                const {comments} = body
+                expect(comments).toBeSortedBy("created_at", {descending: true})
+
+                comments.forEach((comment) => {
+                expect(comment).toHaveProperty("article_id", expect.any(Number));
+                expect(comment).toHaveProperty("comment_id", expect.any(Number));
+                expect(comment).toHaveProperty("author", expect.any(String));
+                expect(comment).toHaveProperty("body", expect.any(String));
+                expect(comment).toHaveProperty("votes", expect.any(Number))
+                })       
+             })
+              })
 
 
-               
+              test("404: Responds -Not found for an invalid article_id", () => {
+                return request(app)
+                .get("/api/articles/88/comments")
+                .expect(404)
+                .then(({body}) => {
+                  expect(body.msg).toBe("Not found");
+                })
+        })
+    })
+                  
                 
             
      
