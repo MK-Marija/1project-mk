@@ -21,3 +21,4 @@ exports.getAllArticles = (req,res,next) => {
         next(err)
     })
 };
+
