@@ -1,5 +1,5 @@
 
-const{selectAllComments} = require(`${__dirname}/../models/comments.model`)
+const{selectAllComments,insertComment} = require(`${__dirname}/../models/comments.model`)
 
 
 
@@ -14,3 +14,20 @@ exports.getAllComments = (req,res,next) => {
         next(err)
     })
 };
+
+exports.postComment = (req,res,next) => {
+   
+ 
+    const article_id = req.body.article_id
+    const username = req.body.username
+    const body = req.body.body
+    insertComment(article_id,username,body).then
+    ((comment) => {
+        res.status(201).send({comment});
+    })
+    .catch((err) => {
+      
+        next(err)
+    });
+    
+}

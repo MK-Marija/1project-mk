@@ -1,6 +1,7 @@
 const {getTopics} = require(`${__dirname}/controllers/topics.controller`)
 const {getAnArticle, getAllArticles} = require(`${__dirname}/controllers/articles.controller`)
 const {getAllComments} = require(`${__dirname}/controllers/comments.controller`)
+const {postComment} = require(`${__dirname}/controllers/comments.controller`)
 const {handlePsqlErrors, handleCustomErrors, handleServerErrors} = require(`${__dirname}/errors`)
 const express = require("express");
 const data = require(`${__dirname}/../endpoints.json`)
@@ -19,6 +20,7 @@ app.get("/api/articles/", getAllArticles)
 
 app.get("/api/articles/:article_id", getAnArticle);
 app.get("/api/articles/:article_id/comments", getAllComments)
+app.post("/api/articles/:article_id/comments", postComment)
 
 app.all("*", (_,res) => {
     res.status(404).send({ msg: "Not found" });

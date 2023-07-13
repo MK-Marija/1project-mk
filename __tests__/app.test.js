@@ -145,7 +145,7 @@ test("404: Returns custom error message ", () => {
 })
 })
 
-describe("GET/ a/api/articles/:article_id/comments", () => {
+describe("GET/ api/articles/:article_id/comments", () => {
     test("200: makes sure it responds with an array of objects ", () => {
         return request(app)
         .get("/api/articles/1/comments")
@@ -180,7 +180,7 @@ describe("GET/ a/api/articles/:article_id/comments", () => {
               })
 
 
-              test("404: Responds -Not found for an invalid article_id", () => {
+              test("404: Responds -Not found for an non existent ID", () => {
                 return request(app)
                 .get("/api/articles/88/comments")
                 .expect(404)
@@ -188,9 +188,51 @@ describe("GET/ a/api/articles/:article_id/comments", () => {
                   expect(body.msg).toBe("Not found");
                 })
         })
-    })
-                  
-                
-            
-     
 
+              test("400: invalid type", () => {
+              return request(app)
+              .get("/api/articles/one/comments")
+             .expect(400)
+            .then(({body}) => {
+              expect(body.msg).toBe("Bad request");
+            })
+        })
+    })
+
+describe("POST /api/articles/:article_id/comments", () => {
+    test.only("201: a new comment has been posted ", () => {
+        const comment = {
+            article_id: 1,
+            username: "butter_bridge",
+            body: "Veni,vidi,vici"
+        }
+        return request(app)
+        .post("/api/articles/1/comments")
+        .expect(201)
+        .send(comment)
+        .then(({body}) => {
+            console.log(body,"<<<< from the test")
+  
+       expect(body.comment).toHaveProperty("article_id", expect.any(Number))
+       expect(body.comment).toHaveProperty("author", expect.any(String))
+       expect(body.comment).toHaveProperty("body", expect.any(String))
+       expect(body.comment).toHaveProperty("comment_id", expect.any(Number))
+       expect(body.comment).toHaveProperty("created_at", expect.any(String))
+       expect(body.comment).toHaveProperty("votes", expect.any(Number))
+
+
+
+
+
+        })
+    })
+
+//     test("400: invalid datatype", () => {
+//         return request(app)
+//         .get("/api/articles/one/comments")
+//        .expect(400)
+//       .then(({body}) => {
+//         expect(body.msg).toBe("Bad request");
+//       })
+//   })
+})
