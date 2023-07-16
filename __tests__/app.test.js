@@ -312,3 +312,21 @@ describe("DELETE /api/comments/:comment_id", () => {
         });
     });
   });
+
+  describe("GET/ api/users", () => {
+    test("200: responds with an array of users objects ", () => {
+        return request(app)
+        .get("/api/users")
+        .expect(200)
+        .then(({body}) => {
+           const users = body.users.rows
+           expect(users.length).toBeGreaterThan(0)
+           expect(Array.isArray(users)).toBe(true)
+           users.forEach((user) => {
+                expect(user).toHaveProperty("username")
+                expect(user).toHaveProperty("name")
+                expect(user).toHaveProperty("avatar_url")
+                })
+            })
+        })
+    })

@@ -1,4 +1,4 @@
-const db = require(`${__dirname}/../../db/connection`)
+const db = require("../../db/connection")
 
 exports.selectTopics = () => {
     return db.query(`SELECT * FROM topics`)
