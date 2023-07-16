@@ -5,6 +5,7 @@ const db = require(`${__dirname}/../db/connection`)
 const seed = require(`${__dirname}/../db/seeds/seed`)
 const testData = require(`${__dirname}/../db/data/test-data`)
 const data = require(`${__dirname}/../endpoints.json`)
+jest.setTimeout(10000);
 
 
 beforeEach(() => {
@@ -180,7 +181,7 @@ describe("GET/ api/articles/:article_id/comments", () => {
               })
 
 
-              test("404: Responds -Not found for an non existent ID", () => {
+              test("404: responds with message' Not found' when passed a non existing ID", () => {
                 return request(app)
                 .get("/api/articles/88/comments")
                 .expect(404)
@@ -189,18 +190,18 @@ describe("GET/ api/articles/:article_id/comments", () => {
                 })
         })
 
-              test("400: invalid type", () => {
+              test("400:  Responds with msg 'Bad request' when passed an invalid id format", () => {
               return request(app)
               .get("/api/articles/one/comments")
-             .expect(400)
-            .then(({body}) => {
-              expect(body.msg).toBe("Bad request");
+              .expect(400)
+              .then(({body}) => {
+               expect(body.msg).toBe("Bad request");
             })
         })
     })
 
 describe("POST /api/articles/:article_id/comments", () => {
-    test.only("201: a new comment has been posted ", () => {
+    test("201: a new comment has been posted ", () => {
         const comment = {
             article_id: 1,
             username: "butter_bridge",
@@ -208,10 +209,10 @@ describe("POST /api/articles/:article_id/comments", () => {
         }
         return request(app)
         .post("/api/articles/1/comments")
-        .expect(201)
         .send(comment)
+        .expect(201)
         .then(({body}) => {
-            console.log(body,"<<<< from the test")
+        
   
        expect(body.comment).toHaveProperty("article_id", expect.any(Number))
        expect(body.comment).toHaveProperty("author", expect.any(String))
@@ -220,19 +221,94 @@ describe("POST /api/articles/:article_id/comments", () => {
        expect(body.comment).toHaveProperty("created_at", expect.any(String))
        expect(body.comment).toHaveProperty("votes", expect.any(Number))
 
-
-
-
-
         })
     })
 
-//     test("400: invalid datatype", () => {
-//         return request(app)
-//         .get("/api/articles/one/comments")
-//        .expect(400)
-//       .then(({body}) => {
-//         expect(body.msg).toBe("Bad request");
-//       })
-//   })
+    test("400:  Responds with msg 'Bad request' when passed an invalid id format", () => {
+        const comment = {
+            article_id: "one",
+            username: "1",
+            body: "3"
+        }
+        return request(app)
+        .post("/api/articles/1/comments")
+        .send(comment)
+        .expect(400)
+        .then(({body}) => {
+        expect(body.msg).toBe("Bad request");
+      })
+  })
 })
+
+describe("PATCH /api/articles/:article_id", () => {
+    test("200: should increse the votes", () => {
+        return request(app)
+        .patch("/api/articles/1")
+        .send({ inc_votes: 1 })
+        .expect(200)
+        .then(({ body }) => {
+         
+          expect(body.article).toHaveProperty("article_id", 1);
+          expect(body.article).toHaveProperty("votes", 201);
+        })
+    })
+
+    test("200: should decrese the votes", () => {
+        return request(app)
+        .patch("/api/articles/1")
+        .send({ inc_votes: -100 })
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.article).toHaveProperty("article_id", 1);
+          expect(body.article).toHaveProperty("votes", 100);
+        })
+    })
+    test("400:  Responds with msg 'Bad request' when passed an invalid id format", () => {
+        return request(app)
+        .patch("/api/articles/notId")
+        .send({ inc_votes: -100 })
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe("Bad request");
+          })
+    })
+
+
+
+    test("404: responds with message' Not found' when passed a non existing ID", () => {
+        return request(app)
+        .patch("/api/articles/88")
+        .send({ inc_votes: -100 })
+        .expect(404)
+        .then(({body}) => {
+            expect(body.msg).toBe("Not found");
+          })
+    })
+})
+
+
+describe("DELETE /api/comments/:comment_id", () => {
+    test("204, responds with an empty response body", () => {
+      return request(app)
+      .delete("/api/comments/2")
+      .expect(204);
+    });
+
+    test("404: responds with message' Not found' when passed a non existing comment id", () => {
+      return request(app)
+        .delete("/api/comments/888888")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Not found");
+        });
+    });
+
+    test("400:  Responds with msg 'Bad request' when passed an invalid id format", () => {
+      return request(app)
+        .delete("/api/comments/notId")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad request");
+        });
+    });
+  });

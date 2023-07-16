@@ -1,7 +1,5 @@
 
-const{selectAllComments,insertComment} = require(`${__dirname}/../models/comments.model`)
-
-
+const{selectAllComments,insertComment, removeComment} = require(`${__dirname}/../models/comments.model`)
 
 
 exports.getAllComments = (req,res,next) => {
@@ -16,8 +14,6 @@ exports.getAllComments = (req,res,next) => {
 };
 
 exports.postComment = (req,res,next) => {
-   
- 
     const article_id = req.body.article_id
     const username = req.body.username
     const body = req.body.body
@@ -30,4 +26,15 @@ exports.postComment = (req,res,next) => {
         next(err)
     });
     
+}
+
+exports.deleteComment = (req,res,next) => {
+    const {comment_id} = req.params
+     removeComment(comment_id).then(() => 
+       res.status(204).send()
+    )
+ .catch((err) => {
+      
+        next(err)
+    });
 }

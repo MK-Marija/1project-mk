@@ -1,5 +1,5 @@
 
-const db = require(`${__dirname}/../../db/connection`)
+const db = require("../../db/connection")
 
 exports.selectArticle = (article_id) => {
     return db
@@ -40,3 +40,17 @@ exports.selectAllArticles = (sort_by="created_at", order = "DESC") => {
                             })
 
 }
+
+exports.updateArticle =(article_id, inc_votes) => {
+    return db.query(`UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *`,
+                    [inc_votes, article_id])
+                    .then(({ rows }) => {
+                        if (rows.length === 0) {
+                        return Promise.reject({status:400, msg: "Bad request"})
+                                }
+
+                     return rows[0]
+                        });
+                    };
+
+                    

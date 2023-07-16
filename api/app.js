@@ -1,10 +1,10 @@
-const {getTopics} = require(`${__dirname}/controllers/topics.controller`)
-const {getAnArticle, getAllArticles} = require(`${__dirname}/controllers/articles.controller`)
-const {getAllComments} = require(`${__dirname}/controllers/comments.controller`)
-const {postComment} = require(`${__dirname}/controllers/comments.controller`)
-const {handlePsqlErrors, handleCustomErrors, handleServerErrors} = require(`${__dirname}/errors`)
+const {getTopics} = require("./controllers/topics.controller")
+const {getAnArticle, getAllArticles, updateArticleById} = require("./controllers/articles.controller")
+const {getAllComments} = require("./controllers/comments.controller")
+const {postComment,deleteComment} = require("./controllers/comments.controller")
+const {handlePsqlErrors, handleCustomErrors, handleServerErrors} = require("./errors")
 const express = require("express");
-const data = require(`${__dirname}/../endpoints.json`)
+const data = require("../endpoints.json")
 
 
 const app = express();
@@ -21,6 +21,8 @@ app.get("/api/articles/", getAllArticles)
 app.get("/api/articles/:article_id", getAnArticle);
 app.get("/api/articles/:article_id/comments", getAllComments)
 app.post("/api/articles/:article_id/comments", postComment)
+app.patch("/api/articles/:article_id", updateArticleById)
+app.delete("/api/comments/:comment_id", deleteComment)
 
 app.all("*", (_,res) => {
     res.status(404).send({ msg: "Not found" });

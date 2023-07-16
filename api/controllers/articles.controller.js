@@ -1,4 +1,4 @@
-const{selectArticle, selectAllArticles} = require(`${__dirname}/../models/articles.model`)
+const{selectArticle, selectAllArticles, updateArticle} = require("../models/articles.model")
 
 
 
@@ -21,4 +21,29 @@ exports.getAllArticles = (req,res,next) => {
         next(err)
     })
 };
+
+
+exports.updateArticleById =(req,res,next) => {
+   
+    const {article_id} = req.params
+    const {inc_votes} = req.body
+
+    selectArticle(article_id)
+    .then((article) => {
+      if (!article) {
+        return Promise.reject({ status: 404, msg: "Not found" });
+      }
+
+    const newVotes = article.votes + inc_votes;
+
+    updateArticle(article_id,newVotes)
+    .then((updatedArticle) => {
+        res.status(200).send({ article: updatedArticle });
+      })
+    })
+      .catch((err) => {
+        next(err);
+      });
+  };
+
 
