@@ -6,7 +6,8 @@ const {postComment,deleteComment} = require("./controllers/comments.controller")
 const {handlePsqlErrors, handleCustomErrors, handleServerErrors} = require("./errors")
 const express = require("express");
 const data = require("../endpoints.json")
-
+const cors = require('cors');
+app.use(cors());
 
 const app = express();
 app.use(express.json());
